@@ -1,6 +1,7 @@
 
 <?php
 session_start();
+
 function pass($x)
 {
     $next = $x + 1;
