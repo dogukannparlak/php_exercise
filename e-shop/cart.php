@@ -15,26 +15,39 @@ $products = [
     2 => ['name' => 'Laptop', 'price' => 15000],
     3 => ['name' => 'Kulaklık', 'price' => 500],
 ];
+// Kullanıcıya özel sepet kontrolü
+if (!isset($_SESSION['cart'][$userId])) {
+    $_SESSION['cart'][$userId] = array();
+}
 
-// Sepet işlemleri
-if (isset($_GET['action'])) {
-    $product_id = $_GET['id'];
+if (isset($_GET['action']) && isset($_GET['id'])) {
     $action = $_GET['action'];
+    $product_id = (int)$_GET['id']; // ID'yi integer olarak alalım
 
-    if (isset($_SESSION['cart'][$userId])) {
-        if ($action == 'increase') {
+    if ($action == 'add') {
+        if (!isset($_SESSION['cart'][$userId][$product_id])) {
+            $_SESSION['cart'][$userId][$product_id] = 1; // İlk kez ekleniyorsa miktar 1
+        } else {
+            $_SESSION['cart'][$userId][$product_id]++; // Zaten varsa miktarı artır
+        }
+    } elseif ($action == 'increase') {
+        if (isset($_SESSION['cart'][$userId][$product_id])) {
             $_SESSION['cart'][$userId][$product_id]++;
-        } elseif ($action == 'decrease') {
+        }
+    } elseif ($action == 'decrease') {
+        if (isset($_SESSION['cart'][$userId][$product_id])) {
             if ($_SESSION['cart'][$userId][$product_id] > 1) {
                 $_SESSION['cart'][$userId][$product_id]--;
             } else {
                 unset($_SESSION['cart'][$userId][$product_id]);
             }
-        } elseif ($action == 'remove') {
-            unset($_SESSION['cart'][$userId][$product_id]);
         }
+    } elseif ($action == 'remove') {
+        unset($_SESSION['cart'][$userId][$product_id]);
     }
 }
+
+
 
 // Sepet ürünleri dizisini al
 $cart = isset($_SESSION['cart'][$userId]) ? $_SESSION['cart'][$userId] : array();
@@ -46,9 +59,9 @@ $cart = isset($_SESSION['cart'][$userId]) ? $_SESSION['cart'][$userId] : array()
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sepetim</title>
-
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="cart">
 <div class="container">
     <h1>Sepetim</h1>
 
@@ -79,76 +92,12 @@ $cart = isset($_SESSION['cart'][$userId]) ? $_SESSION['cart'][$userId] : array()
         <div class="total">
             <p><strong>Toplam Tutar:</strong> <?php echo htmlspecialchars($total); ?> TL</p>
         </div>
-    <?php endif; ?>
+    <?php endif;
+//    print_r($_SESSION['cart'][$userId]);
+    ?>
 
     <a href="main.php">Ana Sayfaya Dön</a>
     <a href="logout.php" class="logout">Oturumu Kapat</a>
 </div>
 </body>
 </html>
-
-
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        color: #333;
-        margin: 0;
-        padding: 0;
-    }
-
-    .container {
-        width: 80%;
-        margin: 0 auto;
-        padding: 20px;
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    h1 {
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
-
-    .cart-item {
-        padding: 10px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .cart-item:last-child {
-        border-bottom: none;
-    }
-
-    .cart-item p {
-        margin: 0;
-    }
-
-    .total {
-        margin-top: 20px;
-        font-weight: bold;
-    }
-
-    a {
-        text-decoration: none;
-        color: #007bff;
-    }
-
-    a:hover {
-        text-decoration: underline;
-    }
-
-    .logout {
-        display: block;
-        margin-top: 20px;
-        padding: 10px;
-        background: #007bff;
-        color: #fff;
-        text-align: center;
-        border-radius: 4px;
-    }
-
-    .logout:hover {
-        background: #0056b3;
-    }
-</style>
