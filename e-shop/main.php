@@ -15,20 +15,7 @@ $products = [
     2 => ['name' => 'Laptop', 'price' => 15000],
     3 => ['name' => 'Kulaklık', 'price' => 500],
 ];
-
-if (isset($_GET['action']) && $_GET['action'] == 'add' && isset($_GET['id'])) {
-    $product_id = (int)$_GET['id']; // ID'yi integer olarak alalım
-
-    if (!isset($_SESSION['cart'][$userId][$product_id])) {
-        $_SESSION['cart'][$userId][$product_id] = 1; // İlk kez ekleniyorsa miktar 1
-    } else {
-        $_SESSION['cart'][$userId][$product_id]++; // Zaten varsa miktarı artır
-    }
-}
-echo "Ürün sepete eklendi!<br>";
-
-//print_r($_SESSION['cart'][$userId]);
-//?>
+?>
 
 <!DOCTYPE html>
 <html lang="tr">
@@ -56,3 +43,20 @@ echo "Ürün sepete eklendi!<br>";
 </div>
 </body>
 </html>
+
+<?php
+
+if (isset($_GET['action']) && $_GET['action'] == 'add' && isset($_GET['id'])) {
+    $product_id = (int)$_GET['id']; // ID'yi integer olarak alalım
+
+    if (!isset($_SESSION['cart'][$userId][$product_id])) {
+        $_SESSION['cart'][$userId][$product_id] = 1; // İlk kez ekleniyorsa miktar 1
+    } else {
+        $_SESSION['cart'][$userId][$product_id]++; // Zaten varsa miktarı artır
+    }
+}
+echo "Ürün sepete eklendi!<br>";
+
+//print_r($_SESSION['cart'][$userId]);
+
+?>

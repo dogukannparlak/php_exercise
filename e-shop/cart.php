@@ -15,6 +15,7 @@ $products = [
     2 => ['name' => 'Laptop', 'price' => 15000],
     3 => ['name' => 'Kulaklık', 'price' => 500],
 ];
+
 // Kullanıcıya özel sepet kontrolü
 if (!isset($_SESSION['cart'][$userId])) {
     $_SESSION['cart'][$userId] = array();
@@ -24,17 +25,12 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
     $action = $_GET['action'];
     $product_id = (int)$_GET['id']; // ID'yi integer olarak alalım
 
-    if ($action == 'add') {
-        if (!isset($_SESSION['cart'][$userId][$product_id])) {
-            $_SESSION['cart'][$userId][$product_id] = 1; // İlk kez ekleniyorsa miktar 1
-        } else {
-            $_SESSION['cart'][$userId][$product_id]++; // Zaten varsa miktarı artır
-        }
-    } elseif ($action == 'increase') {
+    if ($action == 'increase') {
         if (isset($_SESSION['cart'][$userId][$product_id])) {
             $_SESSION['cart'][$userId][$product_id]++;
         }
-    } elseif ($action == 'decrease') {
+    }
+    elseif ($action == 'decrease') {
         if (isset($_SESSION['cart'][$userId][$product_id])) {
             if ($_SESSION['cart'][$userId][$product_id] > 1) {
                 $_SESSION['cart'][$userId][$product_id]--;
@@ -42,12 +38,11 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
                 unset($_SESSION['cart'][$userId][$product_id]);
             }
         }
-    } elseif ($action == 'remove') {
+    }
+    elseif ($action == 'remove') {
         unset($_SESSION['cart'][$userId][$product_id]);
     }
 }
-
-
 
 // Sepet ürünleri dizisini al
 $cart = isset($_SESSION['cart'][$userId]) ? $_SESSION['cart'][$userId] : array();
